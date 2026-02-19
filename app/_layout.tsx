@@ -2,39 +2,30 @@ import { Stack } from 'expo-router';
 import { TamaguiProvider, Theme } from 'tamagui';
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
-import config from '../tamagui.config'; // Your config file
+import config from '../tamagui.config';
 
 export default function RootLayout() {
-    // 1. Load the fonts required by Tamagui (Inter is standard)
-    const [loaded] = useFonts({
-        Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-        InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-    });
+  const [loaded] = useFonts({
+    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
+  });
 
-    // 2. Hide content until fonts are loaded to prevent flickering
-    if (!loaded) return null;
+  if (!loaded) return null;
 
-    return (
-        // 3. Wrap everything in TamaguiProvider
-        <TamaguiProvider config={config} defaultTheme={'dark'}>
-            <Theme name="dark"> {/* Force Dark Mode for that "Gamer" look */}
-                <StatusBar style="light" />
-
-                {/* 4. The Stack Router handles the screens */}
-                <Stack screenOptions={{ headerShown: false }}>
-                    {/* Your Home Screen */}
-                    <Stack.Screen name="index" />
-
-                    {/* Your "Add Quest" Modal */}
-                    <Stack.Screen
-                        name="add-quest"
-                        options={{
-                            presentation: 'modal',
-                            title: 'New Skill'
-                        }}
-                    />
-                </Stack>
-            </Theme>
-        </TamaguiProvider>
-    );
+  return (
+    <TamaguiProvider config={config} defaultTheme="dark">
+      {/* EXPLICITLY force the dark theme here */}
+      <Theme name="dark">
+        <StatusBar style="light" />
+        <Stack screenOptions={{ 
+          headerShown: false,
+          contentStyle: { backgroundColor: '#000' } // Fallback background
+        }}>
+          <Stack.Screen name="index" /> 
+          <Stack.Screen name="login" /> 
+          <Stack.Screen name="add-quest" options={{ presentation: 'modal' }} />
+        </Stack>
+      </Theme>
+    </TamaguiProvider>
+  );
 }
