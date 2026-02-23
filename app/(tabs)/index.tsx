@@ -3,8 +3,8 @@ import { ScrollView } from 'react-native';
 import { YStack, XStack, H1, Button, Text, Spinner } from 'tamagui';
 import { useRouter, useFocusEffect } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker'; // 📸 NEW IMPORT
-import { supabase } from '../lib/supabase';
-import { QuestCard } from '../Components/QuestCard';
+import { supabase } from '../../lib/supabase';
+import { QuestCard } from '../../Components/QuestCard';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -109,6 +109,7 @@ export default function Dashboard() {
                 project={project}
                 activeTimer={activeTimers.find(t => t.project_id === project.id)}
                 onPress={handleCardPress}
+                onEdit={(id) => router.push(`/edit-quest?id=${id}`)}
               />
             ))}
           </XStack>

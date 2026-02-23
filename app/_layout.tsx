@@ -17,13 +17,14 @@ export default function RootLayout() {
       {/* EXPLICITLY force the dark theme here */}
       <Theme name="dark">
         <StatusBar style="light" />
-        <Stack screenOptions={{ 
+        <Stack screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#000' } // Fallback background
+          contentStyle: { backgroundColor: '#000' }
         }}>
-          <Stack.Screen name="index" /> 
-          <Stack.Screen name="login" /> 
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="login" />
           <Stack.Screen name="add-quest" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="edit-quest" options={{ presentation: 'modal' }} />
         </Stack>
       </Theme>
     </TamaguiProvider>

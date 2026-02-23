@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, Pressable } from 'react-native';
 import { YStack, XStack, H2, H4, Text } from 'tamagui';
 import { LiveTimer } from './LiveTimer';
 
@@ -7,9 +7,10 @@ interface QuestCardProps {
     project: any;
     activeTimer: any | undefined;
     onPress: (projectId: string) => void;
+    onEdit?: (projectId: string) => void;
 }
 
-export function QuestCard({ project, activeTimer, onPress }: QuestCardProps) {
+export function QuestCard({ project, activeTimer, onPress, onEdit }: QuestCardProps) {
     const isRunning = !!activeTimer;
 
     // --- XP MATH ---
@@ -52,6 +53,17 @@ export function QuestCard({ project, activeTimer, onPress }: QuestCardProps) {
                     <YStack w={16} h={16} br={8} bc={project.color_hex || "$color"} />
                 )}
                 <H4 col="$color" numberOfLines={1} f={1}>{project.name}</H4>
+                {onEdit && (
+                    <Pressable
+                        onPress={(e) => {
+                            e.stopPropagation();
+                            onEdit(project.id);
+                        }}
+                        style={{ padding: 4 }}
+                    >
+                        <Text fontSize="$3" color="$gray10">✏️</Text>
+                    </Pressable>
+                )}
             </XStack>
 
             {/* MIDDLE: Big Level & Progress Bar */}
