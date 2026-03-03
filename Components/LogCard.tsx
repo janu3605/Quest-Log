@@ -1,6 +1,7 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
 import { YStack, XStack, H4, Text } from 'tamagui';
+import { useAppTheme } from '../lib/theme';
 
 interface LogCardProps {
     log: {
@@ -20,10 +21,11 @@ interface LogCardProps {
     };
 }
 
-export function LogCard({ log }: LogCardProps) {
+export const LogCard = React.memo(function LogCard({ log }: LogCardProps) {
+    const { theme } = useAppTheme();
     const { projects: quest } = log;
+    const questColor = quest.color_hex || '#6366f1';
 
-    // Format duration
     const hours = Math.floor(log.duration_seconds / 3600);
     const minutes = Math.floor((log.duration_seconds % 3600) / 60);
     const seconds = log.duration_seconds % 60;
@@ -31,28 +33,28 @@ export function LogCard({ log }: LogCardProps) {
         ? `${hours}h ${minutes}m`
         : `${minutes}m ${seconds}s`;
 
-    // Format date
     const date = new Date(log.end_time);
     const dateStr = date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
+        weekday: 'short', month: 'short', day: 'numeric',
     });
     const timeStr = date.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
+        hour: 'numeric', minute: '2-digit',
     });
 
     return (
         <YStack
             borderWidth={1}
-            borderColor="$gray4"
+            borderColor={theme.border}
             borderRadius="$6"
-            backgroundColor="$backgroundStrong"
+            backgroundColor={theme.card}
             overflow="hidden"
             mb="$3"
+            maxWidth={600}
+            w="100%"
+            alignSelf="center"
         >
-            {/* Evidence Photo */}
+            <View style={{ height: 3, backgroundColor: questColor, opacity: 0.6 }} />
+
             {log.image_url && (
                 <YStack w="100%" h={200}>
                     <Image
@@ -64,7 +66,6 @@ export function LogCard({ log }: LogCardProps) {
             )}
 
             <YStack p="$4" gap="$3">
-                {/* Quest Identity Row */}
                 <XStack ai="center" gap="$3">
                     {quest.icon_url ? (
                         <Image
@@ -72,63 +73,49 @@ export function LogCard({ log }: LogCardProps) {
                             style={{ width: 32, height: 32, borderRadius: 8 }}
                         />
                     ) : (
-                        <YStack
-                            w={32}
-                            h={32}
-                            br={8}
-                            bc={quest.color_hex || '$color'}
-                            ai="center"
-                            jc="center"
-                        >
+                        <View style={{
+                            width: 32, height: 32, borderRadius: 8,
+                            backgroundColor: questColor,
+                            alignItems: 'center', justifyContent: 'center',
+                        }}>
                             <Text fontSize="$3" color="white">⚔</Text>
-                        </YStack>
+                        </View>
                     )}
                     <YStack f={1}>
-                        <H4 color="$color" numberOfLines={1}>{quest.name}</H4>
-                        <Text color="$gray10" fontSize="$2">{dateStr} · {timeStr}</Text>
+                        <H4 color={theme.text} numberOfLines={1}>{quest.name}</H4>
+                        <Text color={theme.textSecondary} fontSize="$2">{dateStr} · {timeStr}</Text>
                     </YStack>
                 </XStack>
 
-                {/* Stats Row */}
                 <XStack
-                    gap="$4"
-                    p="$3"
-                    backgroundColor="$background"
+                    gap="$4" p="$3"
+                    backgroundColor={theme.cardAlt}
                     borderRadius="$4"
                 >
                     <YStack ai="center" f={1}>
-                        <Text color="$gray10" fontSize="$2">Duration</Text>
-                        <Text color="$color" fontWeight="bold" fontSize="$4">
-                            {durationStr}
-                        </Text>
+                        <Text color={theme.textSecondary} fontSize="$2">Duration</Text>
+                        <Text color={theme.text} fontWeight="bold" fontSize="$4">{durationStr}</Text>
                     </YStack>
-
-                    <YStack w={1} backgroundColor="$gray5" />
-
+                    <View style={{ width: 1, backgroundColor: theme.border }} />
                     <YStack ai="center" f={1}>
-                        <Text color="$gray10" fontSize="$2">XP Earned</Text>
-                        <Text color="$yellow10" fontWeight="bold" fontSize="$4">
-                            +{log.xp_earned}
-                        </Text>
+                        <Text color={theme.textSecondary} fontSize="$2">XP Earned</Text>
+                        <Text color={theme.accent} fontWeight="bold" fontSize="$4">+{log.xp_earned}</Text>
                     </YStack>
                 </XStack>
 
-                {/* Captain's Log Notes */}
                 {log.note ? (
                     <YStack
                         p="$3"
-                        backgroundColor="$background"
+                        backgroundColor={theme.cardAlt}
                         borderRadius="$4"
                         borderLeftWidth={3}
-                        borderLeftColor={quest.color_hex || '$yellow10'}
+                        borderLeftColor={questColor as any}
                     >
-                        <Text color="$gray10" fontSize="$2" mb="$1">Captain's Log</Text>
-                        <Text color="$color" fontSize="$3" lineHeight={20}>
-                            {log.note}
-                        </Text>
+                        <Text color={theme.textSecondary} fontSize="$2" mb="$1">Captain's Log</Text>
+                        <Text color={theme.text} fontSize="$3" lineHeight={20}>{log.note}</Text>
                     </YStack>
                 ) : null}
             </YStack>
         </YStack>
     );
-}
+});

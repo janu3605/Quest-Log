@@ -3,6 +3,26 @@ import { TamaguiProvider, Theme } from 'tamagui';
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import config from '../tamagui.config';
+import { AppThemeProvider, useAppTheme } from '../lib/theme';
+
+function InnerLayout() {
+  const { theme } = useAppTheme();
+
+  return (
+    <>
+      <StatusBar style={theme.statusBarStyle} />
+      <Stack screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: theme.bg }
+      }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="add-quest" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="edit-quest" options={{ presentation: 'modal' }} />
+      </Stack>
+    </>
+  );
+}
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -14,18 +34,10 @@ export default function RootLayout() {
 
   return (
     <TamaguiProvider config={config} defaultTheme="dark">
-      {/* EXPLICITLY force the dark theme here */}
       <Theme name="dark">
-        <StatusBar style="light" />
-        <Stack screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: '#000' }
-        }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="login" />
-          <Stack.Screen name="add-quest" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="edit-quest" options={{ presentation: 'modal' }} />
-        </Stack>
+        <AppThemeProvider>
+          <InnerLayout />
+        </AppThemeProvider>
       </Theme>
     </TamaguiProvider>
   );

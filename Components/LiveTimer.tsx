@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { H4 } from 'tamagui';
+import { useAppTheme } from '../lib/theme';
 
 interface LiveTimerProps {
     startTimeIso: string;
 }
 
 export function LiveTimer({ startTimeIso }: LiveTimerProps) {
+    const { theme } = useAppTheme();
     const [now, setNow] = useState(Date.now());
 
     useEffect(() => {
-        // Tick every second, but ONLY this component re-renders!
         const interval = setInterval(() => setNow(Date.now()), 1000);
         return () => clearInterval(interval);
     }, []);
@@ -22,7 +23,7 @@ export function LiveTimer({ startTimeIso }: LiveTimerProps) {
     const s = (diff % 60).toString().padStart(2, '0');
 
     return (
-        <H4 col="$yellow10" fontFamily="$mono">
+        <H4 color={theme.accent} fontFamily="$mono">
             {`${h}:${m}:${s}`}
         </H4>
     );
